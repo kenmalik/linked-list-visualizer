@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(Review_Project)
+project(Linked_List_Visualizer)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,11 +13,22 @@ file(CREATE_LINK
 
 set(SOURCES src/main.cpp src/arrow-shape.cpp src/nodeptr-shape.cpp src/node-shape.cpp src/data.cpp)
 add_executable(Main ${SOURCES})
-add_subdirectory(linked-list)
+
+# Getting re-implemented linked list from repository
+include(FetchContent)
+FetchContent_Declare(
+    linkedlist
+    GIT_REPOSITORY https://github.com/kenmalik/linked-list.git
+    GIT_TAG 0bfceb8
+)
+FetchContent_MakeAvailable(linkedlist)
+
+# Getting SFML packages
+find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 target_include_directories(Main PRIVATE
     include
-    linked-list/include
+    ${linkedlist_SOURCE_DIR}/include
 )
 
 target_link_libraries(Main PUBLIC
@@ -25,7 +36,5 @@ target_link_libraries(Main PUBLIC
     sfml-window
     sfml-system
     sfml-audio
-    linked-list
 )
 
-find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)

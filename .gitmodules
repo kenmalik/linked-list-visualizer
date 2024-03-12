@@ -1,4 +1,0 @@
-[submodule "linked-list"]
-	path = linked-list
-	url = git@github.com:kenmalik/linked-list.git
-	branch = lib
