@@ -1,4 +1,4 @@
-#include "include/nodeptr-shape.h"
+#include "nodeptr-shape.h"
 #include <SFML/Graphics/Rect.hpp>
 
 NodePtrShape::NodePtrShape() {}

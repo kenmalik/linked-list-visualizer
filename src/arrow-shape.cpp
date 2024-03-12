@@ -1,4 +1,4 @@
-#include "include/arrow-shape.h"
+#include "arrow-shape.h"
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

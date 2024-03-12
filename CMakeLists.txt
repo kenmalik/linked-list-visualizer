@@ -11,23 +11,16 @@ file(CREATE_LINK
     SYMBOLIC
 )
 
-add_executable(Main main.cpp)
-add_library(arrow-shape arrow-shape.cpp)
-add_library(nodeptr-shape nodeptr-shape.cpp)
-add_library(node-shape node-shape.cpp)
-add_library(data data.cpp)
+set(SOURCES src/main.cpp src/arrow-shape.cpp src/nodeptr-shape.cpp src/node-shape.cpp src/data.cpp)
+add_executable(Main ${SOURCES})
 
-target_include_directories(Main PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(Main PRIVATE include)
 
 target_link_libraries(Main PUBLIC
     sfml-graphics
     sfml-window
     sfml-system
     sfml-audio
-    arrow-shape
-    nodeptr-shape
-    node-shape
-    data
 )
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)

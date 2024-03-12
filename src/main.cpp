@@ -1,5 +1,5 @@
 #include "data.h"
-#include "include/arrow-shape.h"
+#include "arrow-shape.h"
 #include "node-shape.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>

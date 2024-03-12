@@ -1,4 +1,4 @@
-#include "include/node-shape.h"
+#include "node-shape.h"
 
 NodeShape::NodeShape() {}
 
