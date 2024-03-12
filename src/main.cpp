@@ -13,6 +13,8 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include "linked-list.hpp"
+
 int main() {
   constexpr size_t kScreenWidth = 1280;
   constexpr size_t kScreenHeight = 720;
@@ -23,6 +25,10 @@ int main() {
   if (!font.loadFromFile("Ubuntu-R.ttf")) {
     std::cerr << "Cannot load font";
   }
+
+  LinkedList<int> list;
+  list.first_node({1, nullptr, nullptr});
+  std::cout << list.getHead()->data << std::endl;
 
   ArrowShape arrow({200, 50});
   arrow.setPosition({500, 500});

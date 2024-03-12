@@ -13,14 +13,19 @@ file(CREATE_LINK
 
 set(SOURCES src/main.cpp src/arrow-shape.cpp src/nodeptr-shape.cpp src/node-shape.cpp src/data.cpp)
 add_executable(Main ${SOURCES})
+add_subdirectory(linked-list)
 
-target_include_directories(Main PRIVATE include)
+target_include_directories(Main PRIVATE
+    include
+    linked-list/include
+)
 
 target_link_libraries(Main PUBLIC
     sfml-graphics
     sfml-window
     sfml-system
     sfml-audio
+    linked-list
 )
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
