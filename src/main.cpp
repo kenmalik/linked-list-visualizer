@@ -27,19 +27,21 @@ int main() {
   }
 
   LinkedList<int> list;
-  list.first_node({1, nullptr, nullptr});
-  std::cout << list.getHead()->data << std::endl;
-
-  ArrowShape arrow({200, 50});
-  arrow.setPosition({500, 500});
+  list.push_back(1);
+  list.push_front(2);
+  std::cout << list << std::endl;
 
   NodeShape node({300 * 1.5, 100 * 1.5}, font);
   node.setData({"New data", font});
-  node.setPosition(250, 250);
   node.setFillColor(sf::Color::White, sf::Color::Green,
                     sf::Color(224, 120, 22));
-  sf::Vector2f nodeVelocity(.2, 0);
-  float nodeAngularVelocity = .1;
+  node.setLeftPosition({0, 0});
+
+  NodeShape node2({300 * 1.5, 100 * 1.5}, font);
+  node2.setData({"Other data", font});
+  node2.setFillColor(sf::Color::White, sf::Color::Green,
+                    sf::Color(224, 120, 22));
+  node2.setRightPosition({kScreenWidth, 0});
 
   while (window.isOpen()) {
     sf::Event event;
@@ -49,18 +51,10 @@ int main() {
       }
     }
 
-    if (node.getPosition().x > kScreenWidth || node.getPosition().x < 0) {
-      nodeVelocity = -nodeVelocity;
-      nodeAngularVelocity = -nodeAngularVelocity;
-    }
-    arrow.rotate(.1);
-    node.rotate(nodeAngularVelocity);
-    node.move(nodeVelocity);
     window.clear();
 
-    window.draw(arrow);
-
     window.draw(node);
+    window.draw(node2);
 
     window.display();
   }

@@ -1,4 +1,6 @@
 #include "node-shape.h"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 
 NodeShape::NodeShape() {}
 
@@ -50,4 +52,14 @@ void NodeShape::setData(const Data &data) {
   this->data.setPosition(
       base.getGlobalBounds().left + base.getGlobalBounds().width / 2,
       base.getGlobalBounds().top + base.getGlobalBounds().height / 2);
+}
+
+void NodeShape::setLeftPosition(const sf::Vector2f &pos) {
+  setPosition(pos);
+  move(base.getGlobalBounds().width * 2, 0);
+}
+
+void NodeShape::setRightPosition(const sf::Vector2f &pos) {
+  setPosition(pos);
+  move(base.getGlobalBounds().width * -2, 0);
 }

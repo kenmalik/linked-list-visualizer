@@ -24,7 +24,9 @@ public:
   NodeShape(const sf::Vector2f &, const sf::Font &);
   void draw(sf::RenderTarget &, sf::RenderStates) const;
   void setFillColor(const sf::Color &, const sf::Color &, const sf::Color &);
-  void setData(const Data& data);
+  void setData(const Data &data);
+  void setLeftPosition(const sf::Vector2f &pos);
+  void setRightPosition(const sf::Vector2f &pos);
 };
 
 #endif // !NODE_H

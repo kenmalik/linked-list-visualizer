@@ -19,7 +19,7 @@ include(FetchContent)
 FetchContent_Declare(
     linkedlist
     GIT_REPOSITORY https://github.com/kenmalik/linked-list.git
-    GIT_TAG 0bfceb8
+    GIT_TAG 400937a
 )
 FetchContent_MakeAvailable(linkedlist)
 
