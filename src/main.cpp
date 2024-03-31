@@ -22,8 +22,9 @@ int main() {
   sf::RenderWindow window({kScreenWidth, kScreenHeight, 32}, "Window");
 
   sf::Font font;
-  if (!font.loadFromFile("Ubuntu-R.ttf")) {
+  if (!font.loadFromFile("../assets/Ubuntu-R.ttf")) {
     std::cerr << "Cannot load font";
+    exit(1);
   }
 
   LinkedList<int> list;
