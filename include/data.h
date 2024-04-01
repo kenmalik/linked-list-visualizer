@@ -2,13 +2,15 @@
 #define DATA_H
 
 #include <SFML/Graphics/Text.hpp>
-#include <string>
 
+template <typename T>
 class Data : public sf::Text {
 private:
 public:
   Data();
-  Data(const std::string &string, const sf::Font &font, unsigned int characterSize = 30);
+  Data(const T &data, const sf::Font &font, unsigned int characterSize = 30);
 };
+
+#include "data.cpp"
 
 #endif // !DATA_H

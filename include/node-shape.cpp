@@ -2,11 +2,13 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 
-NodeShape::NodeShape() {}
+template <typename T>
+NodeShape<T>::NodeShape() {}
 
-NodeShape::NodeShape(const sf::Vector2f &size, const sf::Font &font)
+template <typename T>
+NodeShape<T>::NodeShape(const sf::Vector2f &size, const sf::Font &font)
     : base({size.x * 2 / 8, size.y}), next({size.x * 3 / 8, size.y}),
-      previous({size.x * 3 / 8, size.y}), data("Data", font) {
+      previous({size.x * 3 / 8, size.y}), data() {
   data.setFillColor(sf::Color::Black);
   previous.setRotation(180);
   previous.move(previous.getGlobalBounds().width, 0);
@@ -26,7 +28,8 @@ NodeShape::NodeShape(const sf::Vector2f &size, const sf::Font &font)
             base.getGlobalBounds().top + base.getGlobalBounds().height / 2);
 }
 
-void NodeShape::draw(sf::RenderTarget &window, sf::RenderStates state) const {
+template <typename T>
+void NodeShape<T>::draw(sf::RenderTarget &window, sf::RenderStates state) const {
   state.transform *= getTransform();
 
   window.draw(base, state);
@@ -35,7 +38,8 @@ void NodeShape::draw(sf::RenderTarget &window, sf::RenderStates state) const {
   window.draw(data, state);
 }
 
-void NodeShape::setFillColor(const sf::Color &baseColor,
+template <typename T>
+void NodeShape<T>::setFillColor(const sf::Color &baseColor,
                              const sf::Color &nextColor,
                              const sf::Color &previousColor) {
   base.setFillColor(baseColor);
@@ -43,7 +47,8 @@ void NodeShape::setFillColor(const sf::Color &baseColor,
   previous.setFillColor(previousColor);
 }
 
-void NodeShape::setData(const Data &data) {
+template <typename T>
+void NodeShape<T>::setData(const Data<T> &data) {
   this->data = data;
   this->data.setFillColor(sf::Color::Black);
   this->data.setOrigin(this->data.getGlobalBounds().left + this->data.getGlobalBounds().width / 2,
@@ -54,12 +59,14 @@ void NodeShape::setData(const Data &data) {
       base.getGlobalBounds().top + base.getGlobalBounds().height / 2);
 }
 
-void NodeShape::setLeftPosition(const sf::Vector2f &pos) {
+template <typename T>
+void NodeShape<T>::setLeftPosition(const sf::Vector2f &pos) {
   setPosition(pos);
   move(base.getGlobalBounds().width * 2, 0);
 }
 
-void NodeShape::setRightPosition(const sf::Vector2f &pos) {
+template <typename T>
+void NodeShape<T>::setRightPosition(const sf::Vector2f &pos) {
   setPosition(pos);
   move(base.getGlobalBounds().width * -2, 0);
 }

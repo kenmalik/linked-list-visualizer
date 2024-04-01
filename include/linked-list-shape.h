@@ -20,4 +20,6 @@ public:
   void setFillColor(const sf::Color &, const sf::Color &, const sf::Color &);
 };
 
+#include "linked-list-shape.cpp"
+
 #endif // !LINKED_LIST_H
