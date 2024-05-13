@@ -3,12 +3,11 @@
 
 #include <SFML/Graphics/Text.hpp>
 
-template <typename T>
-class Data : public sf::Text {
-private:
-public:
-  Data();
-  Data(const T &data, const sf::Font &font, unsigned int characterSize = 30);
+template <typename T> class Data : public sf::Text {
+  private:
+  public:
+    Data();
+    Data(const T &data, const sf::Font &font, unsigned int characterSize = 30);
 };
 
 #include "data.cpp"

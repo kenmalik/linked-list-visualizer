@@ -14,20 +14,20 @@
 
 template <typename T>
 class NodeShape : public sf::Drawable, public sf::Transformable {
-private:
-  sf::RectangleShape base;
-  NodePtrShape next;
-  NodePtrShape previous;
-  Data<T> data;
+  private:
+    sf::RectangleShape base;
+    NodePtrShape next;
+    NodePtrShape previous;
+    Data<T> data;
 
-public:
-  NodeShape();
-  NodeShape(const sf::Vector2f &, const sf::Font &);
-  void draw(sf::RenderTarget &, sf::RenderStates) const;
-  void setFillColor(const sf::Color &, const sf::Color &, const sf::Color &);
-  void setData(const Data<T> &data);
-  void setLeftPosition(const sf::Vector2f &pos);
-  void setRightPosition(const sf::Vector2f &pos);
+  public:
+    NodeShape();
+    NodeShape(const sf::Vector2f &, const sf::Font &);
+    void draw(sf::RenderTarget &, sf::RenderStates) const;
+    void setFillColor(const sf::Color &, const sf::Color &, const sf::Color &);
+    void setData(const Data<T> &data);
+    void setLeftPosition(const sf::Vector2f &pos);
+    void setRightPosition(const sf::Vector2f &pos);
 };
 
 #include "node-shape.cpp"
