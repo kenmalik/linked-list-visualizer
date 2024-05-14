@@ -1,7 +1,16 @@
-set(SOURCES src/main.cpp src/nodeptr-shape.cpp src/arrow-shape.cpp)
-add_library(Nodes ${SOURCES})
+cmake_minimum_required(VERSION 3.10)
+project(DataStructureShapes)
 
-target_include_directories(Nodes PRIVATE include)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+file(CREATE_LINK "${PROJECT_BINARY_DIR}/compile_commands.json"
+     "${PROJECT_SOURCE_DIR}/compile_commands.json" SYMBOLIC)
 
-target_link_libraries(Nodes PUBLIC sfml-graphics sfml-window sfml-system
-                                  sfml-audio)
+set(SOURCES src/nodeptr-shape.cpp src/arrow-shape.cpp)
+add_library(DataStructureShapes ${SOURCES})
+
+add_subdirectory(test)
+
+target_include_directories(DataStructureShapes PRIVATE include)
+
+target_link_libraries(DataStructureShapes PUBLIC sfml-graphics sfml-window
+                                            sfml-system)

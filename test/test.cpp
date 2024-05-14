@@ -60,7 +60,7 @@ int main() {
 }
 
 std::unique_ptr<sf::Font> LoadFont() {
-    const std::string kFontPath = "../assets/Ubuntu-R.ttf";
+    const std::string kFontPath = "Ubuntu-R.ttf";
     std::unique_ptr<sf::Font> font(new sf::Font());
     if (!font->loadFromFile(kFontPath)) {
         std::cerr << "Cannot load font at " << kFontPath;
