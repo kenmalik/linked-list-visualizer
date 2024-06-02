@@ -34,32 +34,13 @@ void Application::run() {
                           listShape.getPosition().y + 100);
     indicator.setCharacterSize(24);
 
-    auto input = TextInput();
-    input.setPosition({indicator.getGlobalBounds().left,
-                       indicator.getGlobalBounds().top +
-                           indicator.getGlobalBounds().height + 10});
-    input.setSubmitBehavior([&input, &listShape, &pushingToFront]() {
-        try {
-            const int inputNum = std::stoi(input.getString().toAnsiString());
-            std::cout << "Pushing " << inputNum << std::endl;
-            if (pushingToFront) {
-                list.push_front(inputNum);
-            } else {
-                list.push_back(inputNum);
-            }
-            listShape.update();
-        } catch (const std::invalid_argument &e) {
-            std::cerr << "Invalid input" << std::endl;
-        }
-    });
-
-    auto popBackButton = Button(UBUNTU_R);
-    popBackButton.setText("Pop");
-    popBackButton.setTextSize(16);
-    popBackButton.setPosition(
-        {input.getGlobalBounds().left,
-         input.getGlobalBounds().top + input.getGlobalBounds().height + 10});
-    popBackButton.setSubmitBehavior([&listShape, &pushingToFront]() {
+    auto popButton = Button(UBUNTU_R);
+    popButton.setText("Pop");
+    popButton.setTextSize(16);
+    popButton.setPosition({indicator.getGlobalBounds().left,
+                           indicator.getGlobalBounds().top +
+                               indicator.getGlobalBounds().height + 16});
+    popButton.setSubmitBehavior([&listShape, &pushingToFront]() {
         if (!list.empty()) {
             std::cout << "Popping back" << std::endl;
             if (pushingToFront) {
@@ -76,14 +57,76 @@ void Application::run() {
     auto toggleButton = Button(UBUNTU_R);
     toggleButton.setText("Toggle Direction");
     toggleButton.setTextSize(16);
-    toggleButton.setPosition({popBackButton.getGlobalBounds().left,
-                              popBackButton.getGlobalBounds().top +
-                                  popBackButton.getGlobalBounds().height + 10});
+    toggleButton.setPosition({popButton.getGlobalBounds().left +
+                                  popButton.getGlobalBounds().width + 16,
+                              popButton.getGlobalBounds().top});
     toggleButton.setSubmitBehavior([&pushingToFront, &indicator]() {
         pushingToFront = !pushingToFront;
         indicator.setText(pushingToFront ? "Changing from front"
                                          : "Changing from back");
     });
+
+    Word pushLabel;
+    pushLabel.setText("Push: ");
+    pushLabel.setPosition({popButton.getGlobalBounds().left,
+                           popButton.getGlobalBounds().top +
+                               popButton.getGlobalBounds().height + 16});
+    pushLabel.setCharacterSize(24);
+
+    auto pushInput = TextInput();
+    pushInput.setPosition({pushLabel.getGlobalBounds().left + 110,
+                           pushLabel.getGlobalBounds().top});
+    pushInput.setSubmitBehavior([&pushInput, &listShape, &pushingToFront]() {
+        try {
+            const int inputNum =
+                std::stoi(pushInput.getString().toAnsiString());
+            std::cout << "Pushing " << inputNum << std::endl;
+            if (pushingToFront) {
+                list.push_front(inputNum);
+            } else {
+                list.push_back(inputNum);
+            }
+            listShape.update();
+        } catch (const std::invalid_argument &e) {
+            std::cerr << "Invalid input" << std::endl;
+        }
+    });
+    pushLabel.setPosition(pushLabel.getPosition().x,
+                          pushLabel.getPosition().y +
+                              (pushInput.getGlobalBounds().height -
+                               pushLabel.getGlobalBounds().height) /
+                                  2);
+
+    Word removeLabel;
+    removeLabel.setText("Remove: ");
+    removeLabel.setPosition({pushLabel.getGlobalBounds().left,
+                             pushInput.getGlobalBounds().top +
+                                 pushInput.getGlobalBounds().height + 16});
+    removeLabel.setCharacterSize(24);
+
+    auto removeInput = TextInput();
+    removeInput.setPosition({removeLabel.getGlobalBounds().left + 110,
+                             removeLabel.getGlobalBounds().top});
+    removeInput.setSubmitBehavior([&removeInput, &listShape]() {
+        try {
+            const int inputNum =
+                std::stoi(removeInput.getString().toAnsiString());
+            if (!list.empty()) {
+                std::cout << "Removing " << inputNum << std::endl;
+                list.remove(inputNum);
+                listShape.update();
+            } else {
+                std::cerr << "List is empty" << std::endl;
+            }
+        } catch (const std::invalid_argument &e) {
+            std::cerr << "Invalid input" << std::endl;
+        }
+    });
+    removeLabel.setPosition(removeLabel.getPosition().x,
+                            removeLabel.getPosition().y +
+                                (removeInput.getGlobalBounds().height -
+                                 removeLabel.getGlobalBounds().height) /
+                                    2);
 
     sf::RenderWindow window({SCREEN_WIDTH, SCREEN_HEIGHT}, "Window");
 
@@ -93,22 +136,27 @@ void Application::run() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-            input.eventHandler(window, event);
-            popBackButton.eventHandler(window, event);
+            pushInput.eventHandler(window, event);
+            removeInput.eventHandler(window, event);
+            popButton.eventHandler(window, event);
             toggleButton.eventHandler(window, event);
         }
 
-        input.update();
-        popBackButton.update();
+        pushInput.update();
+        removeInput.update();
+        popButton.update();
         toggleButton.update();
 
         window.clear(sf::Color::White);
 
         window.draw(indicator);
         window.draw(listShape);
-        window.draw(input);
-        window.draw(popBackButton);
+        window.draw(pushInput);
+        window.draw(popButton);
         window.draw(toggleButton);
+        window.draw(removeLabel);
+        window.draw(removeInput);
+        window.draw(pushLabel);
 
         window.display();
     }
