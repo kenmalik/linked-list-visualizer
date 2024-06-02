@@ -1,7 +1,6 @@
 #ifndef LINKED_LIST_APPLICATION
 #define LINKED_LIST_APPLICATION
 
-#include "linked-list-shape.h"
 #include <SFML/Graphics/Drawable.hpp>
 #include <list>
 #include <vector>

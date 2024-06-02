@@ -6,16 +6,15 @@
 template <typename T> LinkedListShape<T>::LinkedListShape() {}
 
 template <typename T>
-LinkedListShape<T>::LinkedListShape(std::list<T> &list,
+LinkedListShape<T>::LinkedListShape(std::list<T> *list,
                                     const sf::Vector2f &size,
                                     const sf::Font &font) {
-    float initial_x = 0;
-    for (const T &data : list) {
-        nodes.push_back({size, font});
-        nodes.back().setData({data, font});
-        nodes.back().setLeftPosition({initial_x, 50});
-        initial_x += size.x;
-    }
+    this->list = list;
+    nodeCount = list->size();
+    nodeSize = size;
+    nodeFont = font;
+    setFillColor(sf::Color::White, sf::Color::Green, sf::Color(224, 120, 22));
+    updateShapes();
 }
 
 template <typename T>
@@ -35,8 +34,32 @@ template <typename T>
 void LinkedListShape<T>::setFillColor(const sf::Color &baseColor,
                                       const sf::Color &nextColor,
                                       const sf::Color &previousColor) {
+
+    colorProfile.primary = baseColor;
+    colorProfile.secondary = nextColor;
+    colorProfile.tertiary = previousColor;
     for (auto &node : nodes) {
         node.setFillColor(baseColor, nextColor, previousColor);
+    }
+}
+
+template <typename T> void LinkedListShape<T>::update() {
+    if (list->size() != nodeCount) {
+        updateShapes();
+        nodeCount = list->size();
+    }
+}
+
+template <typename T> void LinkedListShape<T>::updateShapes() {
+    nodes.clear();
+    float initial_x = 0;
+    for (const T &data : *(this->list)) {
+        nodes.push_back({nodeSize, nodeFont});
+        nodes.back().setData({data, nodeFont});
+        nodes.back().setLeftPosition({initial_x, 50});
+        nodes.back().setFillColor(colorProfile.primary, colorProfile.secondary,
+                                  colorProfile.tertiary);
+        initial_x += nodeSize.x;
     }
 }
 
