@@ -21,13 +21,18 @@ class LinkedListShape : public sf::Drawable, public sf::Transformable {
     LinkedListShape(const sf::Vector2f &, const sf::Font &);
     void draw(sf::RenderTarget &, sf::RenderStates) const;
     void setFillColor(const sf::Color &, const sf::Color &, const sf::Color &);
+    void setHighlightedFillColor(const sf::Color &, const sf::Color &,
+                                 const sf::Color &);
+    void highlight(int index);
     void update();
+    void resetColors();
 
   private:
     sf::Vector2f nodeSize;
     sf::Font nodeFont;
     int nodeCount = 0;
-    ColorProfile colorProfile;
+    ColorProfile defaultColorProfile;
+    ColorProfile highlightedColorProfile;
 
     std::vector<NodeShape<T>> nodes;
     const std::list<T> *list;

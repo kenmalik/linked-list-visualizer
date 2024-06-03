@@ -14,6 +14,7 @@ LinkedListShape<T>::LinkedListShape(std::list<T> *list,
     nodeSize = size;
     nodeFont = font;
     setFillColor(sf::Color::White, sf::Color::Green, sf::Color(224, 120, 22));
+    setHighlightedFillColor(sf::Color::White, sf::Color::Red, sf::Color::Blue);
     updateShapes();
 }
 
@@ -34,13 +35,21 @@ template <typename T>
 void LinkedListShape<T>::setFillColor(const sf::Color &baseColor,
                                       const sf::Color &nextColor,
                                       const sf::Color &previousColor) {
-
-    colorProfile.primary = baseColor;
-    colorProfile.secondary = nextColor;
-    colorProfile.tertiary = previousColor;
+    defaultColorProfile.primary = baseColor;
+    defaultColorProfile.secondary = nextColor;
+    defaultColorProfile.tertiary = previousColor;
     for (auto &node : nodes) {
         node.setFillColor(baseColor, nextColor, previousColor);
     }
+}
+
+template <typename T>
+void LinkedListShape<T>::setHighlightedFillColor(
+    const sf::Color &baseColor, const sf::Color &nextColor,
+    const sf::Color &previousColor) {
+    highlightedColorProfile.primary = baseColor;
+    highlightedColorProfile.secondary = nextColor;
+    highlightedColorProfile.tertiary = previousColor;
 }
 
 template <typename T> void LinkedListShape<T>::update() {
@@ -57,9 +66,25 @@ template <typename T> void LinkedListShape<T>::updateShapes() {
         nodes.push_back({nodeSize, nodeFont});
         nodes.back().setData({data, nodeFont});
         nodes.back().setLeftPosition({initial_x, 50});
-        nodes.back().setFillColor(colorProfile.primary, colorProfile.secondary,
-                                  colorProfile.tertiary);
+        nodes.back().setFillColor(defaultColorProfile.primary,
+                                  defaultColorProfile.secondary,
+                                  defaultColorProfile.tertiary);
         initial_x += nodeSize.x;
+    }
+}
+
+template <typename T> void LinkedListShape<T>::highlight(int index) {
+    resetColors();
+    nodes.at(index).setFillColor(highlightedColorProfile.primary,
+                                 highlightedColorProfile.secondary,
+                                 highlightedColorProfile.tertiary);
+}
+
+template <typename T> void LinkedListShape<T>::resetColors() {
+    for (auto &node : nodes) {
+        node.setFillColor(defaultColorProfile.primary,
+                          defaultColorProfile.secondary,
+                          defaultColorProfile.tertiary);
     }
 }
 

@@ -1,9 +1,11 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/VideoMode.hpp>
 
 #include <iostream>
+#include <map>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -13,6 +15,7 @@
 #include "font-enum.h"
 #include "font-manager.h"
 #include "linked-list-shape.h"
+#include "state-enum.h"
 #include "text-input.h"
 #include "word.h"
 
@@ -22,11 +25,19 @@ std::list<int> Application::list;
 void Application::add(sf::Drawable *drawable) { drawables.push_back(drawable); }
 
 void Application::run() {
+    std::map<int, std::string> pushTypes = {{0, "Changing from back"},
+                                            {1, "Changing from front"},
+                                            {2, "Changing from selected"}};
+    int pushType = 0;
+
     bool pushingToFront = false;
 
     auto listShape =
         LinkedListShape<int>(&list, {150, 50}, FontManager::getFont(UBUNTU_R));
     listShape.setPosition(32, 32);
+
+    std::list<int>::iterator iter = list.begin();
+    int selector = -1;
 
     Word indicator;
     indicator.setText("Changing from back");
@@ -40,13 +51,16 @@ void Application::run() {
     popButton.setPosition({indicator.getGlobalBounds().left,
                            indicator.getGlobalBounds().top +
                                indicator.getGlobalBounds().height + 16});
-    popButton.setSubmitBehavior([&listShape, &pushingToFront]() {
+    popButton.setSubmitBehavior([&listShape, &pushType, &iter]() {
         if (!list.empty()) {
             std::cout << "Popping back" << std::endl;
-            if (pushingToFront) {
-                list.pop_front();
-            } else {
+            switch (pushType) {
+            case 0:
                 list.pop_back();
+                break;
+            case 1:
+                list.pop_front();
+                break;
             }
             listShape.update();
         } else {
@@ -60,10 +74,25 @@ void Application::run() {
     toggleButton.setPosition({popButton.getGlobalBounds().left +
                                   popButton.getGlobalBounds().width + 16,
                               popButton.getGlobalBounds().top});
-    toggleButton.setSubmitBehavior([&pushingToFront, &indicator]() {
-        pushingToFront = !pushingToFront;
-        indicator.setText(pushingToFront ? "Changing from front"
-                                         : "Changing from back");
+    toggleButton.setSubmitBehavior([&pushType, &pushTypes, &indicator, &iter,
+                                    &listShape, &selector, &popButton]() {
+        pushType++;
+        if (pushType > 2) {
+            pushType = 0;
+        }
+        indicator.setText(pushTypes[pushType]);
+        if (pushType == 2) {
+            popButton.enableState(DISABLED);
+            iter = list.begin();
+            selector = -1;
+            if (list.size() > 0) {
+                selector = 0;
+                std::cout << "Set iter to " << *iter << std::endl;
+            }
+        } else {
+            popButton.disableState(DISABLED);
+            listShape.resetColors();
+        }
     });
 
     Word pushLabel;
@@ -76,21 +105,38 @@ void Application::run() {
     auto pushInput = TextInput();
     pushInput.setPosition({pushLabel.getGlobalBounds().left + 110,
                            pushLabel.getGlobalBounds().top});
-    pushInput.setSubmitBehavior([&pushInput, &listShape, &pushingToFront]() {
-        try {
-            const int inputNum =
-                std::stoi(pushInput.getString().toAnsiString());
-            std::cout << "Pushing " << inputNum << std::endl;
-            if (pushingToFront) {
-                list.push_front(inputNum);
-            } else {
-                list.push_back(inputNum);
+    pushInput.setSubmitBehavior(
+        [&pushInput, &listShape, &pushType, &selector, &iter]() {
+            try {
+                const int inputNum =
+                    std::stoi(pushInput.getString().toAnsiString());
+                std::cout << "Pushing " << inputNum << std::endl;
+                bool wasEmpty = list.empty();
+                switch (pushType) {
+                case 0:
+                    list.push_back(inputNum);
+                    break;
+                case 1:
+                    list.push_front(inputNum);
+                    break;
+                case 2:
+                    list.insert(iter, inputNum);
+                    iter = list.begin();
+                    selector = 0;
+                    break;
+                }
+                if (wasEmpty) {
+                    std::cout << "Setting iter" << std::endl;
+                    selector = 0;
+                    iter = list.begin();
+                }
+                std::cout << "Iter on " << *iter << std::endl;
+                listShape.update();
+            } catch (const std::invalid_argument &e) {
+                std::cerr << "Invalid input" << std::endl;
             }
-            listShape.update();
-        } catch (const std::invalid_argument &e) {
-            std::cerr << "Invalid input" << std::endl;
-        }
-    });
+            pushInput.setString("");
+        });
     pushLabel.setPosition(pushLabel.getPosition().x,
                           pushLabel.getPosition().y +
                               (pushInput.getGlobalBounds().height -
@@ -121,6 +167,7 @@ void Application::run() {
         } catch (const std::invalid_argument &e) {
             std::cerr << "Invalid input" << std::endl;
         }
+        removeInput.setString("");
     });
     removeLabel.setPosition(removeLabel.getPosition().x,
                             removeLabel.getPosition().y +
@@ -135,6 +182,18 @@ void Application::run() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
+            } else if (list.size() > 0 && event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Right &&
+                    selector < list.size() - 1) {
+                    selector++;
+                    iter++;
+                    std::cout << "On " << *iter << std::endl;
+                } else if (event.key.code == sf::Keyboard::Left &&
+                           selector > 0) {
+                    selector--;
+                    iter--;
+                    std::cout << "On " << *iter << std::endl;
+                }
             }
             pushInput.eventHandler(window, event);
             removeInput.eventHandler(window, event);
@@ -146,6 +205,10 @@ void Application::run() {
         removeInput.update();
         popButton.update();
         toggleButton.update();
+        if (pushType == 2 && list.size() != 0 && selector >= 0 &&
+            selector < list.size()) {
+            listShape.highlight(selector);
+        }
 
         window.clear(sf::Color::White);
 
