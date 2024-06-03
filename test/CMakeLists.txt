@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
   GuiComponents
   GIT_REPOSITORY git@github.com:kenmalik/gui-library.git
-  GIT_TAG origin/lib)
+  GIT_TAG 2d64cbe9af4c7a4c3d41d160e4b49a156283ed42)
 
 FetchContent_MakeAvailable(GuiComponents)
 
