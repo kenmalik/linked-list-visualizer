@@ -153,22 +153,25 @@ void Application::run() {
     auto removeInput = TextInput();
     removeInput.setPosition({removeLabel.getGlobalBounds().left + 110,
                              removeLabel.getGlobalBounds().top});
-    removeInput.setSubmitBehavior([&removeInput, &listShape]() {
-        try {
-            const int inputNum =
-                std::stoi(removeInput.getString().toAnsiString());
-            if (!list.empty()) {
-                std::cout << "Removing " << inputNum << std::endl;
-                list.remove(inputNum);
-                listShape.update();
-            } else {
-                std::cerr << "List is empty" << std::endl;
+    removeInput.setSubmitBehavior(
+        [&removeInput, &listShape, &iter, &selector]() {
+            try {
+                const int inputNum =
+                    std::stoi(removeInput.getString().toAnsiString());
+                if (!list.empty()) {
+                    std::cout << "Removing " << inputNum << std::endl;
+                    list.remove(inputNum);
+                    listShape.update();
+                } else {
+                    std::cerr << "List is empty" << std::endl;
+                }
+            } catch (const std::invalid_argument &e) {
+                std::cerr << "Invalid input" << std::endl;
             }
-        } catch (const std::invalid_argument &e) {
-            std::cerr << "Invalid input" << std::endl;
-        }
-        removeInput.setString("");
-    });
+            removeInput.setString("");
+            iter = list.begin();
+            selector = 0;
+        });
     removeLabel.setPosition(removeLabel.getPosition().x,
                             removeLabel.getPosition().y +
                                 (removeInput.getGlobalBounds().height -
